@@ -3,7 +3,7 @@ body {
     margin: 20px;
 }
 
-h1, h2 {
+h1, h2, h3 {
     color: #333;
 }
 
@@ -22,4 +22,20 @@ input, select {
 button {
     margin-top: 15px;
     padding: 10px 20px;
+}
+
+#steps-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#steps-table th, #steps-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+#steps-table th {
+    background-color: #f2f2f2;
 }

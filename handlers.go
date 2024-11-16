@@ -34,6 +34,7 @@ func initSimulation(c *gin.Context) {
 		CurrentStep:  0,
 		StartTime:    time.Now(),
 		Status:       "In Progress",
+		Steps:        []Step{},
 		LRUTracker:   make(map[int]int),
 		FIFOQueue:    []int{},
 	}
@@ -44,7 +45,13 @@ func initSimulation(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message":        "Memory simulation initialized successfully.",
-		"simulation_id": id,
+		"simulation_id":  id,
+		"current_step":   sim.CurrentStep,
+		"memory_frames":  sim.MemoryFrames,
+		"page_faults":    sim.PageFaults,
+		"page_hits":      sim.PageHits,
+		"status":         sim.Status,
+		"steps":          sim.Steps,
 	})
 }
 
@@ -63,11 +70,12 @@ func getSimulationState(c *gin.Context) {
 	defer sim.Lock.RUnlock()
 
 	c.JSON(http.StatusOK, gin.H{
-		"current_step":  sim.CurrentStep,
-		"memory_frames": sim.MemoryFrames,
-		"page_faults":   sim.PageFaults,
-		"page_hits":     sim.PageHits,
-		"status":        sim.Status,
+		"current_step":   sim.CurrentStep,
+		"memory_frames":  sim.MemoryFrames,
+		"page_faults":    sim.PageFaults,
+		"page_hits":      sim.PageHits,
+		"status":         sim.Status,
+		"steps":          sim.Steps,
 	})
 }
 
@@ -88,6 +96,7 @@ func advanceSimulation(c *gin.Context) {
 	if sim.Status == "Completed" {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Simulation already completed.",
+			"steps":   sim.Steps,
 		})
 		return
 	}
@@ -95,12 +104,13 @@ func advanceSimulation(c *gin.Context) {
 	action := sim.ProcessNextStep()
 
 	c.JSON(http.StatusOK, gin.H{
-		"current_step":  sim.CurrentStep,
-		"memory_frames": sim.MemoryFrames,
-		"page_faults":   sim.PageFaults,
-		"page_hits":     sim.PageHits,
-		"action":        action,
-		"status":        sim.Status,
+		"current_step":   sim.CurrentStep,
+		"memory_frames":  sim.MemoryFrames,
+		"page_faults":    sim.PageFaults,
+		"page_hits":      sim.PageHits,
+		"action":         action,
+		"status":         sim.Status,
+		"steps":          sim.Steps,
 	})
 }
 
@@ -123,16 +133,18 @@ func resetSimulation(c *gin.Context) {
 	sim.PageHits = 0
 	sim.CurrentStep = 0
 	sim.Status = "In Progress"
+	sim.Steps = []Step{}
 	sim.LRUTracker = make(map[int]int)
 	sim.FIFOQueue = []int{}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message":       "Simulation reset successfully.",
-		"current_step":  sim.CurrentStep,
-		"memory_frames": sim.MemoryFrames,
-		"page_faults":   sim.PageFaults,
-		"page_hits":     sim.PageHits,
-		"status":        sim.Status,
+		"message":        "Simulation reset successfully.",
+		"current_step":   sim.CurrentStep,
+		"memory_frames":  sim.MemoryFrames,
+		"page_faults":    sim.PageFaults,
+		"page_hits":      sim.PageHits,
+		"status":         sim.Status,
+		"steps":          sim.Steps,
 	})
 }
 
@@ -151,12 +163,13 @@ func getSimulationResults(c *gin.Context) {
 	defer sim.Lock.RUnlock()
 
 	c.JSON(http.StatusOK, gin.H{
-		"total_steps":        sim.CurrentStep,
-		"total_page_faults":  sim.PageFaults,
-		"total_page_hits":    sim.PageHits,
-		"algorithm":          sim.Algorithm,
-		"page_sequence":      sim.PageSequence,
+		"total_steps":         sim.CurrentStep,
+		"total_page_faults":   sim.PageFaults,
+		"total_page_hits":     sim.PageHits,
+		"algorithm":           sim.Algorithm,
+		"page_sequence":       sim.PageSequence,
 		"memory_frames_final": sim.MemoryFrames,
+		"steps":               sim.Steps,
 	})
 }
 
