@@ -6,54 +6,45 @@
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-    <h1>Virtual to Physical Memory Address Conversion</h1>
+    <h1>Virtual to Physical Memory Address Simulation</h1>
+    <form id="simulationForm">
+        <label for="numFrames">Number of Frames:</label>
+        <input type="number" id="numFrames" name="numFrames" required><br><br>
 
-    <div id="init-section">
-        <h2>Initialize Simulation</h2>
-        <form id="init-form">
-            <label for="num_frames">Number of Frames:</label>
-            <input type="number" id="num_frames" name="num_frames" required><br>
+        <label for="pages">Pages Sequence (comma-separated):</label>
+        <input type="text" id="pages" name="pages" required><br><br>
 
-            <label for="algorithm">Algorithm:</label>
-            <select id="algorithm" name="algorithm" required>
-                <option value="FIFO">FIFO</option>
-                <option value="LRU">LRU</option>
-            </select><br>
+        <label for="virtualAddresses">Virtual Addresses (page:offset, comma-separated):</label>
+        <input type="text" id="virtualAddresses" name="virtualAddresses" required><br><br>
 
-            <label for="page_sequence">Page Sequence (comma separated):</label>
-            <input type="text" id="page_sequence" name="page_sequence" required><br>
+        <label for="algorithm">Page Replacement Algorithm:</label>
+        <select id="algorithm" name="algorithm" required>
+            <option value="">Select Algorithm</option>
+        </select><br><br>
 
-            <button type="submit">Start Simulation</button>
-        </form>
-    </div>
+        <button type="submit">Simulate</button>
+    </form>
 
-    <div id="simulation-section" style="display:none;">
-        <h2>Simulation</h2>
-        <p>Simulation ID: <span id="simulation_id"></span></p>
-        <p>Current Step: <span id="current_step">0</span></p>
-        <p>Memory Frames: <span id="memory_frames">[]</span></p>
-        <p>Page Faults: <span id="page_faults">0</span></p>
-        <p>Page Hits: <span id="page_hits">0</span></p>
-        <p>Status: <span id="status">In Progress</span></p>
-        <button id="next-step">Next Step</button>
-        <button id="reset-simulation">Reset Simulation</button>
+    <h2>Simulation Results</h2>
+    <table id="resultsTable" border="1">
+        <thead>
+            <tr>
+                <th>Step</th>
+                <th>Page</th>
+                <th>Hit/Miss</th>
+                <th>Action</th>
+                <th>Physical Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Results will be populated here -->
+        </tbody>
+    </table>
 
-        <h3>Step-by-Step Address Mapping</h3>
-        <table id="steps-table">
-            <thead>
-                <tr>
-                    <th>Step Number</th>
-                    <th>Virtual Address</th>
-                    <th>Physical Frames</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Steps will be dynamically inserted here -->
-            </tbody>
-        </table>
-    </div>
+    <h3>Summary</h3>
+    <p>Total Hits: <span id="totalHits">0</span></p>
+    <p>Total Misses: <span id="totalMisses">0</span></p>
 
-    <script src="/static/js/scripts.js"></script>
+    <script src="/static/js/app.js"></script>
 </body>
 </html>

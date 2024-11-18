@@ -1,30 +1,28 @@
-// main.go
 package main
 
 import (
+	"memory-simulation/handlers"
+
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	router := gin.Default()
 
+	// Serve static files
+	router.Static("/static", "./static")
+
+	// Serve HTML templates
+	router.LoadHTMLGlob("templates/*")
+
+	// API Routes
 	api := router.Group("/api")
 	{
-		api.POST("/init", initSimulation)
-		api.GET("/simulations", listSimulations)
-
-		sim := api.Group("/simulation/:id")
-		{
-			sim.GET("/state", getSimulationState)
-			sim.POST("/next", advanceSimulation)
-			sim.POST("/reset", resetSimulation)
-			sim.GET("/results", getSimulationResults)
-		}
+		api.GET("/algorithms", handlers.GetAlgorithms)
+		api.POST("/simulate", handlers.Simulate)
 	}
 
-	// Serve frontend (if using Go templates)
-	router.LoadHTMLGlob("templates/*")
-	router.Static("/static", "./static")
+	// Frontend Routes
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(200, "index.html", nil)
 	})
